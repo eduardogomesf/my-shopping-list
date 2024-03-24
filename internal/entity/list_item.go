@@ -5,13 +5,13 @@ import "errors"
 type ListItem struct {
 	ID             string
 	Name           string
-	Price          int16
+	Price          float32
 	Quantity       int16
 	Description    *string
 	ShoppingListId string
 }
 
-func NewListItem(id string, name string, quantity int16, price int16, description *string, shoppingListId string) (*ListItem, error) {
+func NewListItem(id string, name string, quantity int16, price float32, description *string, shoppingListId string) (*ListItem, error) {
 	li := &ListItem{
 		ID:             id,
 		Name:           name,
