@@ -14,7 +14,7 @@ type MockGetActiveShoppingListByNameRepository struct {
 	mock.Mock
 }
 
-func (m *MockGetActiveShoppingListByNameRepository) Get(name string) (*entity.ShoppingList, error) {
+func (m *MockGetActiveShoppingListByNameRepository) GetActiveByName(name string) (*entity.ShoppingList, error) {
 	args := m.Called(name)
 	return args.Get(0).(*entity.ShoppingList), args.Error(1)
 }
