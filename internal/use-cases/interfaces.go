@@ -7,5 +7,5 @@ type GetActiveShoppingListByNameRepository interface {
 }
 
 type CreateShoppingListRepository interface {
-	Create(*entity.ShoppingList) error
+	Create(sl *entity.ShoppingList) error
 }
