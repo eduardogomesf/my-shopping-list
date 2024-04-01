@@ -15,7 +15,7 @@ type AddShoppingListUseCase struct {
 }
 
 func (asl *AddShoppingListUseCase) Add(data dto.AddShoppingListDTO) error {
-	shoppingListByName, err := asl.GetActiveShoppingListByNameRepository.Get(data.Name)
+	shoppingListByName, err := asl.GetActiveShoppingListByNameRepository.GetActiveByName(data.Name)
 
 	if err != nil {
 		return err
