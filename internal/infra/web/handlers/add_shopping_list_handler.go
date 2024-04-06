@@ -7,14 +7,14 @@ import (
 	"net/http"
 
 	"github.com/eduardogomesf/shopping/internal/dto"
-	usecase "github.com/eduardogomesf/shopping/internal/use-cases"
+	usecases "github.com/eduardogomesf/shopping/internal/use-cases"
 )
 
 type AddShoppingListHandler struct {
-	AddShoppingListUseCase usecase.AddShoppingListUseCase
+	AddShoppingListUseCase usecases.AddShoppingListUseCase
 }
 
-func NewAddShoppingListHandler(addNewShoppingListUseCase usecase.AddShoppingListUseCase) *AddShoppingListHandler {
+func NewAddShoppingListHandler(addNewShoppingListUseCase usecases.AddShoppingListUseCase) *AddShoppingListHandler {
 	return &AddShoppingListHandler{
 		AddShoppingListUseCase: addNewShoppingListUseCase,
 	}
@@ -40,7 +40,7 @@ func (h *AddShoppingListHandler) Handle(w http.ResponseWriter, r *http.Request) 
 	if err != nil {
 		fmt.Println("error adding shopping list", err)
 
-		usecaseErrors := usecase.GetUseCaseErrors()
+		usecaseErrors := usecases.GetUseCaseErrors()
 
 		if err == usecaseErrors.ErrUnfinishedShoppingList {
 			w.WriteHeader(http.StatusConflict)
