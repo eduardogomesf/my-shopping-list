@@ -44,6 +44,7 @@ func (h *AddShoppingListHandler) Handle(w http.ResponseWriter, r *http.Request) 
 
 		if err == usecaseErrors.ErrUnfinishedShoppingList {
 			w.WriteHeader(http.StatusConflict)
+			w.Write([]byte("There is an unfinished shopping list with the same name"))
 		} else {
 			w.WriteHeader(http.StatusInternalServerError)
 		}
