@@ -35,7 +35,7 @@ func (slr *ShoppingListRepository) GetActiveByName(name string) (*entity.Shoppin
 		ID:         shoppingList.ID,
 		Name:       shoppingList.Name,
 		CreatedAt:  shoppingList.CreatedAt,
-		FinishedAt: &shoppingList.UpdatedAt,
+		FinishedAt: shoppingList.FinishedAt,
 		IsFinished: shoppingList.IsFinished,
 	}, nil
 }
