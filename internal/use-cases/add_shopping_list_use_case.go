@@ -1,7 +1,6 @@
 package usecase
 
 import (
-	"errors"
 	"time"
 
 	"github.com/eduardogomesf/shopping/internal/dto"
@@ -21,8 +20,10 @@ func (asl *AddShoppingListUseCase) Add(data dto.AddShoppingListDTO) error {
 		return err
 	}
 
+	useCaseErrors := GetUseCaseErrors()
+
 	if shoppingListByName != nil {
-		return errors.New("there is an unfinished shopping list with the given name")
+		return useCaseErrors.ErrUnfinishedShoppingList
 	}
 
 	shoppingList, err := entity.NewShoppingList(
