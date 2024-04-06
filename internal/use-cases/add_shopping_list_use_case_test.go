@@ -29,69 +29,69 @@ func (m *MockCreateShoppingListRepository) Create(shoppingList *entity.ShoppingL
 }
 
 func TestAddShoppingListUseCase_Add_Success(t *testing.T) {
-	mockGetRepo := new(MockGetActiveShoppingListByNameRepository)
+	mockGetActiveByNameRepo := new(MockGetActiveShoppingListByNameRepository)
 	mockCreateRepo := new(MockCreateShoppingListRepository)
 	useCase := AddShoppingListUseCase{
-		GetActiveShoppingListByNameRepository: mockGetRepo,
+		GetActiveShoppingListByNameRepository: mockGetActiveByNameRepo,
 		CreateShoppingListRepository:          mockCreateRepo,
 	}
 
-	mockGetRepo.On("Get", "Groceries").Return((*entity.ShoppingList)(nil), nil)
+	mockGetActiveByNameRepo.On("GetActiveByName", "Groceries").Return((*entity.ShoppingList)(nil), nil)
 	mockCreateRepo.On("Create", mock.AnythingOfType("*entity.ShoppingList")).Return(nil)
 
 	err := useCase.Add(dto.AddShoppingListDTO{Name: "Groceries"})
 
 	assert.NoError(t, err)
-	mockGetRepo.AssertExpectations(t)
+	mockGetActiveByNameRepo.AssertExpectations(t)
 	mockCreateRepo.AssertExpectations(t)
 }
 
 func TestAddShoppingListUseCase_Add_ExistingShoppingListError(t *testing.T) {
-	mockGetRepo := new(MockGetActiveShoppingListByNameRepository)
+	mockGetActiveByNameRepo := new(MockGetActiveShoppingListByNameRepository)
 	mockCreateRepo := new(MockCreateShoppingListRepository)
 	useCase := AddShoppingListUseCase{
-		GetActiveShoppingListByNameRepository: mockGetRepo,
+		GetActiveShoppingListByNameRepository: mockGetActiveByNameRepo,
 		CreateShoppingListRepository:          mockCreateRepo,
 	}
 
-	mockGetRepo.On("Get", "Groceries").Return(&entity.ShoppingList{}, nil)
+	mockGetActiveByNameRepo.On("GetActiveByName", "Groceries").Return(&entity.ShoppingList{}, nil)
 
 	err := useCase.Add(dto.AddShoppingListDTO{Name: "Groceries"})
 
 	assert.EqualError(t, err, "there is an unfinished shopping list with the given name")
-	mockGetRepo.AssertExpectations(t)
+	mockGetActiveByNameRepo.AssertExpectations(t)
 }
 
 func TestAddShoppingListUseCase_Add_GetRepositoryError(t *testing.T) {
-	mockGetRepo := new(MockGetActiveShoppingListByNameRepository)
+	mockGetActiveByNameRepo := new(MockGetActiveShoppingListByNameRepository)
 	mockCreateRepo := new(MockCreateShoppingListRepository)
 	useCase := AddShoppingListUseCase{
-		GetActiveShoppingListByNameRepository: mockGetRepo,
+		GetActiveShoppingListByNameRepository: mockGetActiveByNameRepo,
 		CreateShoppingListRepository:          mockCreateRepo,
 	}
 
-	mockGetRepo.On("Get", "Groceries").Return((*entity.ShoppingList)(nil), errors.New("database error"))
+	mockGetActiveByNameRepo.On("GetActiveByName", "Groceries").Return((*entity.ShoppingList)(nil), errors.New("database error"))
 
 	err := useCase.Add(dto.AddShoppingListDTO{Name: "Groceries"})
 
 	assert.EqualError(t, err, "database error")
-	mockGetRepo.AssertExpectations(t)
+	mockGetActiveByNameRepo.AssertExpectations(t)
 }
 
 func TestAddShoppingListUseCase_Add_CreateRepositoryError(t *testing.T) {
-	mockGetRepo := new(MockGetActiveShoppingListByNameRepository)
+	mockGetActiveByNameRepo := new(MockGetActiveShoppingListByNameRepository)
 	mockCreateRepo := new(MockCreateShoppingListRepository)
 	useCase := AddShoppingListUseCase{
-		GetActiveShoppingListByNameRepository: mockGetRepo,
+		GetActiveShoppingListByNameRepository: mockGetActiveByNameRepo,
 		CreateShoppingListRepository:          mockCreateRepo,
 	}
 
-	mockGetRepo.On("Get", "Groceries").Return((*entity.ShoppingList)(nil), nil)
+	mockGetActiveByNameRepo.On("GetActiveByName", "Groceries").Return((*entity.ShoppingList)(nil), nil)
 	mockCreateRepo.On("Create", mock.AnythingOfType("*entity.ShoppingList")).Return(errors.New("creation error"))
 
 	err := useCase.Add(dto.AddShoppingListDTO{Name: "Groceries"})
 
 	assert.EqualError(t, err, "creation error")
-	mockGetRepo.AssertExpectations(t)
+	mockGetActiveByNameRepo.AssertExpectations(t)
 	mockCreateRepo.AssertExpectations(t)
 }
