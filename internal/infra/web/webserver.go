@@ -3,6 +3,7 @@ package webserver
 import (
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
@@ -22,19 +23,45 @@ func NewWebServer(serverPort string) *WebServer {
 	}
 }
 
-func (ws *WebServer) AddHandler(path string, handler http.HandlerFunc) {
-	ws.Handlers[path] = handler
+func (ws *WebServer) AddHandler(method string, path string, handler http.HandlerFunc) {
+	if method == "" || path == "" || handler == nil {
+		panic("method, path and handler are required")
+	}
+
+	if method != "GET" && method != "POST" && method != "PUT" && method != "DELETE" && method != "PATCH" {
+		panic("method must be GET, POST, PUT, PATCH or DELETE")
+	}
+
+	key := fmt.Sprintf("%s-%s", method, path)
+
+	ws.Handlers[key] = handler
 }
 
 func (ws *WebServer) Start() {
 	ws.Router.Use(middleware.Logger)
 
-	ws.AddHandler("/", func(w http.ResponseWriter, r *http.Request) {
+	ws.AddHandler("GET", "/", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(fmt.Sprintf("Running on port: %s", ws.WebServerPort)))
 	})
 
 	for path, handler := range ws.Handlers {
-		ws.Router.Handle(path, handler)
+		keyParts := strings.Split(path, "-")
+
+		method := keyParts[0]
+		path = keyParts[1]
+
+		if method == "GET" {
+			ws.Router.Get(path, handler)
+		} else if method == "POST" {
+			ws.Router.Post(path, handler)
+		} else if method == "PUT" {
+			ws.Router.Put(path, handler)
+		} else if method == "DELETE" {
+			ws.Router.Delete(path, handler)
+		} else if method == "PATCH" {
+			ws.Router.Patch(path, handler)
+		}
 	}
+
 	http.ListenAndServe(fmt.Sprintf(":%s", ws.WebServerPort), ws.Router)
 }
