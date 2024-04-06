@@ -14,8 +14,10 @@ type AddShoppingListHandler struct {
 	AddShoppingListUseCase usecase.AddShoppingListUseCase
 }
 
-func NewAddShoppingListHandler() *AddShoppingListHandler {
-	return &AddShoppingListHandler{}
+func NewAddShoppingListHandler(addNewShoppingListUseCase usecase.AddShoppingListUseCase) *AddShoppingListHandler {
+	return &AddShoppingListHandler{
+		AddShoppingListUseCase: addNewShoppingListUseCase,
+	}
 }
 
 func (h *AddShoppingListHandler) Handle(w http.ResponseWriter, r *http.Request) {
