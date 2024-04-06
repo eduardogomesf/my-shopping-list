@@ -32,7 +32,7 @@ func (ws *WebServer) AddHandler(method string, path string, handler http.Handler
 		panic("method must be GET, POST, PUT, PATCH or DELETE")
 	}
 
-	key := fmt.Sprintf("%s-%s", method, path)
+	key := fmt.Sprintf("%s->%s", method, path)
 
 	ws.Handlers[key] = handler
 }
@@ -45,10 +45,12 @@ func (ws *WebServer) Start() {
 	})
 
 	for path, handler := range ws.Handlers {
-		keyParts := strings.Split(path, "-")
+		keyParts := strings.Split(path, "->")
 
 		method := keyParts[0]
 		path = keyParts[1]
+
+		fmt.Println("Adding handler", method, path)
 
 		if method == "GET" {
 			ws.Router.Get(path, handler)
