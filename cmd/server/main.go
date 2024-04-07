@@ -17,7 +17,7 @@ func main() {
 	conf := config.LoadConfig(".")
 	ws := webserver.NewWebServer(conf.APPPort)
 
-	connectionUrl := "host=localhost user=postgres password=postgres dbname=postgres port=5432 sslmode=disable TimeZone=UTC"
+	connectionUrl := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", conf.PGHost, conf.PGPort, conf.PGUser, conf.PGPass, conf.PGDB)
 	db, err := gorm.Open(postgres.Open(connectionUrl), &gorm.Config{})
 
 	if err != nil {
@@ -28,11 +28,8 @@ func main() {
 	db.AutoMigrate(&models.ShoppingListModel{})
 
 	shoppingListRepository := repositories.NewShoppingListRepository(db)
-	addShoppingListUseCase := usecases.AddShoppingListUseCase{
-		GetActiveShoppingListByNameRepository: shoppingListRepository,
-		CreateShoppingListRepository:          shoppingListRepository,
-	}
-	addNewShoppingListHandler := handler.NewAddShoppingListHandler(addShoppingListUseCase)
+	addShoppingListUseCase := usecases.NewAddShoppingListUseCase(shoppingListRepository, shoppingListRepository)
+	addNewShoppingListHandler := handler.NewAddShoppingListHandler(*addShoppingListUseCase)
 	ws.AddHandler("POST", "/shopping-lists", addNewShoppingListHandler.Handle)
 
 	ws.Start()

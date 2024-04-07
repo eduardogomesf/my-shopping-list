@@ -6,6 +6,11 @@ import (
 
 type AppConfig struct {
 	APPPort string `mapstructure:"APP_PORT"`
+	PGHost  string `mapstructure:"PG_HOST"`
+	PGPort  string `mapstructure:"PG_PORT"`
+	PGUser  string `mapstructure:"PG_USER"`
+	PGPass  string `mapstructure:"PG_PASS"`
+	PGDB    string `mapstructure:"PG_DB"`
 }
 
 func LoadConfig(path string) *AppConfig {
