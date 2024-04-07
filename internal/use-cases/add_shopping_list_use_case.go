@@ -1,7 +1,6 @@
 package usecases
 
 import (
-	"errors"
 	"time"
 
 	"github.com/eduardogomesf/shopping/internal/dto"
@@ -14,15 +13,27 @@ type AddShoppingListUseCase struct {
 	CreateShoppingListRepository          CreateShoppingListRepository
 }
 
+func NewAddShoppingListUseCase(
+	getActiveShoppingListByNameRepository GetActiveShoppingListByNameRepository,
+	createShoppingListRepository CreateShoppingListRepository,
+) *AddShoppingListUseCase {
+	return &AddShoppingListUseCase{
+		GetActiveShoppingListByNameRepository: getActiveShoppingListByNameRepository,
+		CreateShoppingListRepository:          createShoppingListRepository,
+	}
+}
+
 func (asl *AddShoppingListUseCase) Add(data dto.AddShoppingListDTO) error {
-	shoppingListByName, err := asl.GetActiveShoppingListByNameRepository.Get(data.Name)
+	shoppingListByName, err := asl.GetActiveShoppingListByNameRepository.GetActiveByName(data.Name)
 
 	if err != nil {
 		return err
 	}
 
+	useCaseErrors := GetUseCaseErrors()
+
 	if shoppingListByName != nil {
-		return errors.New("there is an unfinished shopping list with the given name")
+		return useCaseErrors.ErrUnfinishedShoppingList
 	}
 
 	shoppingList, err := entity.NewShoppingList(
