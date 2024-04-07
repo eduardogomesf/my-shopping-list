@@ -13,6 +13,16 @@ type AddShoppingListUseCase struct {
 	CreateShoppingListRepository          CreateShoppingListRepository
 }
 
+func NewAddShoppingListUseCase(
+	getActiveShoppingListByNameRepository GetActiveShoppingListByNameRepository,
+	createShoppingListRepository CreateShoppingListRepository,
+) *AddShoppingListUseCase {
+	return &AddShoppingListUseCase{
+		GetActiveShoppingListByNameRepository: getActiveShoppingListByNameRepository,
+		CreateShoppingListRepository:          createShoppingListRepository,
+	}
+}
+
 func (asl *AddShoppingListUseCase) Add(data dto.AddShoppingListDTO) error {
 	shoppingListByName, err := asl.GetActiveShoppingListByNameRepository.GetActiveByName(data.Name)
 
